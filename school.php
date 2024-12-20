@@ -20,11 +20,13 @@
     $req = $bdd->prepare("SELECT * FROM etablissements WHERE id=?");
     $req->execute([$id]);
     $don = $req->fetch();
+    $req->closeCursor();
     // vérifier si $don est vide
     if(!$don)
     {
         header("LOCATION:404.php");
     }
+    
 ?>
 
 <!DOCTYPE html>
@@ -37,14 +39,37 @@
 </head>
 <body>
     <div class="slide" id="test">
-      
-
     <?php
-
-        echo $don['nom'];
+        echo "<h1>".$don['nom']."</h1>";
     ?>
+
+    <h1><?= $don['nom'] ?></h1>
+
     </div>
   
+
+
+    <div>
+        <h1>Galerie images</h1>
+        <?php
+            $reqGal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+            $reqGal->execute([$id]);
+            // compter le nombre de réponse
+            $count = $reqGal->rowCount();
+            if($count > 0)
+            {
+                while($donGal = $reqGal->fetch())
+                {
+                    echo "<img src='images/".$donGal['fichier']."' alt='image'>";
+                }
+            }else{
+                echo "Aucune image pour cet établissement";
+            }
+            $reqGal->closeCursor();
+        ?>
+
+
+    </div>
 
     <script src="assets/script.js"></script>
 </body>
