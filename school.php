@@ -1,3 +1,27 @@
+<?php
+    // besoin d'un id si pas d'id affichage erreur donc on fait une redirection
+    // isset => si existe
+    // empty => si vide mais existe
+    // négation des fonctions ! 
+    // n'existe pas => !isset
+    if(isset($_GET['id']))
+    {
+        $id = htmlspecialchars($_GET['id']);
+        // is_numeric => si c'est numérique
+        // !is_numeric => si pas numérique
+        if(!is_numeric($id))
+        {
+            header("LOCATION:404.php");
+        }
+    }else{
+        header("LOCATION:404.php");
+    }
+    require "connexion.php";
+    $req = $bdd->prepare("SELECT * FROM etablissements WHERE id=?");
+    $req->execute([$id]);
+    $don = $req->fetch();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,10 +32,14 @@
 </head>
 <body>
     <div class="slide" id="test">
-        <?php
-            include("partials/header.php");
-        ?>
+      
+
+    <?php
+
+        echo $don['nom'];
+    ?>
     </div>
+  
 
     <script src="assets/script.js"></script>
 </body>
