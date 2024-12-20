@@ -6,6 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Oops cette page n'existe pas!</h1>
+    <h1>Oops cette page n'existe pas! (ou plus)</h1>
+    <a href="index.php">Revenir au site</a>
 </body>
 </html>

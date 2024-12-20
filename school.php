@@ -20,6 +20,11 @@
     $req = $bdd->prepare("SELECT * FROM etablissements WHERE id=?");
     $req->execute([$id]);
     $don = $req->fetch();
+    // vérifier si $don est vide
+    if(!$don)
+    {
+        header("LOCATION:404.php");
+    }
 ?>
 
 <!DOCTYPE html>
