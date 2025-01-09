@@ -351,6 +351,14 @@ footer{
     background-color: #35066B;
 }
 
+
+
+/****************** SchoolPage *************/
+
+.school .container-info{
+    padding-top: 120px;
+}
+
 @media all and (max-width: 1080px)
 {
     .head nav{

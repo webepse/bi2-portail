@@ -26,7 +26,6 @@
     {
         header("LOCATION:404.php");
     }
-    
 ?>
 
 <!DOCTYPE html>
@@ -38,37 +37,39 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="slide" id="test">
-    <?php
-        echo "<h1>".$don['nom']."</h1>";
-    ?>
+    <div class="slide school" id="test">
+        <?php
+            include("partials/header.php");
+        ?>
+        <div class="container container-info">
+            <h1><?= $don['nom'] ?></h1>
 
-    <h1><?= $don['nom'] ?></h1>
+        </div>
 
     </div>
   
 
 
     <div>
-        <h1>Galerie images</h1>
-        <?php
-            $reqGal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
-            $reqGal->execute([$id]);
-            // compter le nombre de réponse
-            $count = $reqGal->rowCount();
-            if($count > 0)
-            {
-                while($donGal = $reqGal->fetch())
+        <div class="container">
+            <h1>Galerie images</h1>
+            <?php
+                $reqGal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+                $reqGal->execute([$id]);
+                // compter le nombre de réponse
+                $count = $reqGal->rowCount();
+                if($count > 0)
                 {
-                    echo "<img src='images/".$donGal['fichier']."' alt='image'>";
+                    while($donGal = $reqGal->fetch())
+                    {
+                        echo "<img src='images/".$donGal['fichier']."' alt='image'>";
+                    }
+                }else{
+                    echo "Aucune image pour cet établissement";
                 }
-            }else{
-                echo "Aucune image pour cet établissement";
-            }
-            $reqGal->closeCursor();
-        ?>
-
-
+                $reqGal->closeCursor();
+            ?>
+        </div>
     </div>
 
     <script src="assets/script.js"></script>
