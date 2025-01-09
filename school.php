@@ -17,7 +17,7 @@
         header("LOCATION:404.php");
     }
     require "connexion.php";
-    $req = $bdd->prepare("SELECT * FROM etablissements WHERE id=?");
+    $req = $bdd->prepare("SELECT etablissements.nom AS enom, categories.nom AS cnom, etablissements.introduction AS intro, etablissements.description AS description,  etablissements.image as image FROM etablissements INNER JOIN categories ON etablissements.categorie = categories.id WHERE etablissements.id=?");
     $req->execute([$id]);
     $don = $req->fetch();
     $req->closeCursor();
@@ -44,15 +44,16 @@
         ?>
         <div class="container container-info">
             <div class="gauche">
-                <h1><?= $don['nom'] ?></h1>
+                <h1><?= $don['enom'] ?></h1>
+                <h4>Catégorie : <?= $don['cnom'] ?></h4>
                 <div class="img">
-                    <img src="images/<?= $don['image'] ?>" alt="image de <?= $don['nom'] ?>">
+                    <img src="images/<?= $don['image'] ?>" alt="image de <?= $don['enom'] ?>">
                 </div>
             </div>
             <div class="droite">
                 <div class="text">
                     <h3>Introduction</h3>
-                    <?= nl2br($don['introduction']) ?>
+                    <?= nl2br($don['intro']) ?>
                     <h3>Description</h3>
                     <?= nl2br($don['description']) ?>
                 </div>
