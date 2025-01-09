@@ -85,11 +85,9 @@
 
         </div>
     </div>
-    <footer>
-        <div id="copy">
-            &copy; copyright EPSE
-        </div>
-    </footer>
+    <?php
+        include("partials/footer.php");
+    ?>
     <!-- le script doit être déclaré en dernier (juste avant la fermeture du body) car les élements doivent exister pour que javascripts les select -->
     <script src="assets/script.js"></script>
 </body>

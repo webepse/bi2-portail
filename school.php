@@ -33,6 +33,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
@@ -42,36 +43,66 @@
             include("partials/header.php");
         ?>
         <div class="container container-info">
-            <h1><?= $don['nom'] ?></h1>
-
+            <div class="gauche">
+                <h1><?= $don['nom'] ?></h1>
+                <div class="img">
+                    <img src="images/<?= $don['image'] ?>" alt="image de <?= $don['nom'] ?>">
+                </div>
+            </div>
+            <div class="droite">
+                <div class="text">
+                    <h3>Introduction</h3>
+                    <?= nl2br($don['introduction']) ?>
+                    <h3>Description</h3>
+                    <?= nl2br($don['description']) ?>
+                </div>
+            </div>
         </div>
 
     </div>
-  
 
-
-    <div>
+    <div id="galimg">
         <div class="container">
             <h1>Galerie images</h1>
-            <?php
-                $reqGal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
-                $reqGal->execute([$id]);
-                // compter le nombre de réponse
-                $count = $reqGal->rowCount();
-                if($count > 0)
-                {
-                    while($donGal = $reqGal->fetch())
-                    {
-                        echo "<img src='images/".$donGal['fichier']."' alt='image'>";
-                    }
-                }else{
-                    echo "Aucune image pour cet établissement";
-                }
-                $reqGal->closeCursor();
-            ?>
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <?php
+                        $reqGal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+                        $reqGal->execute([$id]);
+                        // compter le nombre de réponse
+                        $count = $reqGal->rowCount();
+                        if($count > 0)
+                        {
+                            while($donGal = $reqGal->fetch())
+                            {
+                                echo "<div class='swiper-slide'><img src='images/".$donGal['fichier']."' alt='image'></div>";
+                            }
+                        }else{
+                            echo "Aucune image pour cet établissement";
+                        }
+                        $reqGal->closeCursor();
+                    ?>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+            
         </div>
     </div>
-
+    <?php
+        include("partials/footer.php");
+    ?>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="assets/script.js"></script>
+
+    <!-- Initialize Swiper -->
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        });
+    </script>
 </body>
 </html>

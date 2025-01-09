@@ -15,9 +15,9 @@
             <div id="logo">Site Name</div>
             <nav>
                 <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#etablissement">School</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="index.php#home">Home</a></li>
+                    <li><a href="index.php#etablissement">School</a></li>
+                    <li><a href="index.php#contact">Contact</a></li>
                 </ul>
             </nav>
             <div id="burger">
