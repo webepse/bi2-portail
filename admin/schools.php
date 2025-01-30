@@ -16,11 +16,11 @@
     <title>BI2 Portail - Admin</title>
 </head>
 <body>
-  <?php
-      include("partials/header.php");
-  ?>
+    <?php
+        include("partials/header.php");
+    ?>
   <div class="container-fluid">
-    <h1>Tableau de bord</h1>
+    <h1>Les établissements</h1>
   </div>
 </body>
 </html>
