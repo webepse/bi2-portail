@@ -4,6 +4,7 @@
     {
         header("LOCATION:index.php");
     }
+    require "../connexion.php";
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +22,35 @@
     ?>
   <div class="container-fluid">
     <h1>Les établissements</h1>
+    <a href="addSchools.php" class="btn btn-success">Ajouter</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Catégorie</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                $schools = $bdd->query("SELECT etablissements.nom AS enom, etablissements.id AS eid, categories.nom AS cnom FROM etablissements INNER JOIN categories ON etablissements.categorie = categories.id"); 
+                while($don = $schools->fetch())
+                {
+                    echo "<tr>";
+                        echo "<td>".$don['eid']."</td>";
+                        echo "<td>".$don['enom']."</td>";
+                        echo "<td>".$don['cnom']."</td>";
+                        echo "<td>";
+                            echo "<a href='#' class='btn btn-warning mx-1'>Modifier</a>";
+                            echo "<a href='#' class='btn btn-danger mx-1'>Supprimer</a>";
+                        echo "</td>";
+                    echo "</tr>";
+                }
+                $schools->closeCursor();
+            ?>
+        </tbody>
+    </table>
   </div>
 </body>
 </html>

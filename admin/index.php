@@ -1,5 +1,11 @@
 <?php
     session_start();
+
+    if(isset($_SESSION['login']))
+    {
+        header("LOCATION:dashboard.php");
+    }
+
     // vérifier si le formulaire est envoyé ou non?
     if(isset($_POST['login']) && isset($_POST['password']))
     {
