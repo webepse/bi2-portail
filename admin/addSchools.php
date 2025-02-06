@@ -20,7 +20,7 @@
     <?php
         include("partials/header.php");
     ?>
-  <div class="container-fluid">
+  <div class="container">
     <h1>Ajouter un établissement</h1>
     <a href="schools.php" class="btn btn-secondary">Retour</a>
     <form action="treatmentAddSchool.php" method="POST">
