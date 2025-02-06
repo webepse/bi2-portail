@@ -51,7 +51,7 @@
                         echo "<td>".$don['enom']."</td>";
                         echo "<td>".$don['cnom']."</td>";
                         echo "<td>";
-                            echo "<a href='#' class='btn btn-warning mx-1'>Modifier</a>";
+                            echo "<a href='updateSchools.php?id=".$don['eid']."' class='btn btn-warning mx-1'>Modifier</a>";
                             echo "<a href='#' class='btn btn-danger mx-1'>Supprimer</a>";
                         echo "</td>";
                     echo "</tr>";
