@@ -41,7 +41,7 @@
   <div class="container">
     <h1>Modifier un établissement</h1>
     <a href="schools.php" class="btn btn-secondary">Retour</a>
-    <form action="treatmentAddSchool.php" method="POST">
+    <form action="treatmentUpdateSchool.php?id=<?= $id ?>" method="POST">
         <div class="form-group my-3">
             <label for="nom">Nom: </label>
             <input type="text" id="nom" name="nom" class="form-control" value="<?= $donSchool['nom'] ?>">
@@ -53,7 +53,12 @@
                     $req = $bdd->query("SELECT * FROM categories");
                     while($don = $req->fetch())
                     {
-                        echo "<option value='".$don['id']."'>".$don['nom']."</option>";
+                        if($donSchool['categorie']==$don['id'])
+                        {
+                            echo "<option value='".$don['id']."' selected>".$don['nom']."</option>";
+                        }else{
+                            echo "<option value='".$don['id']."'>".$don['nom']."</option>";
+                        }
                     }
                     $req->closeCursor();
                 ?>

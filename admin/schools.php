@@ -31,6 +31,10 @@
                 echo "<div class='alert alert-success my-3'>Vous avez bien ajouté un établissement à la liste</div>";
             }
         }
+        if(isset($_GET['update']))
+        {
+            echo "<div class='alert alert-warning my-3'>Vous avez bien modifié l'id numéro ".$_GET['update']."</div>";
+        }
     ?>
     <table class="table table-striped">
         <thead>
