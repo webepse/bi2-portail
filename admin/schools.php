@@ -23,6 +23,15 @@
   <div class="container-fluid">
     <h1>Les établissements</h1>
     <a href="addSchools.php" class="btn btn-success">Ajouter</a>
+    <?php
+        if(isset($_GET['insert']))
+        {
+            if($_GET['insert']=="success")
+            {
+                echo "<div class='alert alert-success my-3'>Vous avez bien ajouté un établissement à la liste</div>";
+            }
+        }
+    ?>
     <table class="table table-striped">
         <thead>
             <tr>
