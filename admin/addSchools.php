@@ -23,7 +23,7 @@
   <div class="container">
     <h1>Ajouter un établissement</h1>
     <a href="schools.php" class="btn btn-secondary">Retour</a>
-    <form action="treatmentAddSchool.php" method="POST">
+    <form action="treatmentAddSchool.php" method="POST" enctype="multipart/form-data">
         <div class="form-group my-3">
             <label for="nom">Nom: </label>
             <input type="text" id="nom" name="nom" class="form-control">
@@ -51,7 +51,7 @@
         </div>
         <div class="form-group my-3">
             <label for="image">Image: </label>
-            <input type="text" name="image" id="image" class="form-control">
+            <input type="file" name="image" id="image" class="form-control">
         </div>
         <div class="form-group my-3">
             <input type="submit" value="Ajouter" class="btn btn-primary">
