@@ -5,88 +5,142 @@
     {
         header("LOCATION:index.php");
     }
-
-    var_dump($_POST);
-    var_dump($_FILES);
     
-    // //vérifier si mon formulaire à été envoyé oui ou non?
-    // if(isset($_POST['nom']))
-    // {
+    //vérifier si mon formulaire à été envoyé oui ou non?
+    if(isset($_POST['nom']))
+    {
 
-    //     // vérifier si mon formulaire à envoyé des données (pas vide)
-    //     // initialiser une variable erreur à 0 pour dire pas encore d'erreur à ce stade
-    //     $err=0;
+        // vérifier si mon formulaire à envoyé des données (pas vide)
+        // initialiser une variable erreur à 0 pour dire pas encore d'erreur à ce stade
+        $err=0;
         
-    //     // tester chaque name du form
-    //     if(empty($_POST['nom']))
-    //     {
-    //         // vrai
-    //         $err=1;
-    //     }else{
-    //         // faux
-    //         // protection de la données pcq elle vient de l'extérieur
-    //         $nom = htmlspecialchars($_POST['nom']);
-    //     }
+        // tester chaque name du form
+        if(empty($_POST['nom']))
+        {
+            // vrai
+            $err=1;
+        }else{
+            // faux
+            // protection de la données pcq elle vient de l'extérieur
+            $nom = htmlspecialchars($_POST['nom']);
+            // test suivant par exemple vérifier le nombre de lettre ou si 'il y a des chiffres
+            // si erreur = $err=6;
+        }
 
-    //     if(empty($_POST['categorie']))
-    //     {
-    //         $err=2;
-    //     }else{
-    //         $categorie = htmlspecialchars($_POST['categorie']);
-    //     }
+        if(empty($_POST['categorie']))
+        {
+            $err=2;
+        }else{
+            $categorie = htmlspecialchars($_POST['categorie']);
+        }
 
-    //     if(empty($_POST['introduction']))
-    //     {
-    //         $err=3;
-    //     }else{
-    //         $introduction = htmlspecialchars($_POST['introduction']);
-    //     }
+        if(empty($_POST['introduction']))
+        {
+            $err=3;
+        }else{
+            $introduction = htmlspecialchars($_POST['introduction']);
+        }
 
-    //     if(empty($_POST['description']))
-    //     {
-    //         $err=4;
-    //     }else{
-    //         $description = htmlspecialchars($_POST['description']);
-    //     }
+        if(empty($_POST['description']))
+        {
+            $err=4;
+        }else{
+            $description = htmlspecialchars($_POST['description']);
+        }
 
-    //     if(empty($_POST['image']))
-    //     {
-    //         $err=5;
-    //     }else{
-    //         $image = htmlspecialchars($_POST['image']);
-    //     }
+       
+        // tester s'il y a eu une erreur
+        if($err == 0)
+        {
+            // traitement de l'image 
+            if(isset($_FILES['image']))
+            {
+                if($_FILES['images']['error'] != 0)
+                {
+                    header("LOCATION:addSchools.php?error=6");
+                }
+
+                $dossier = '../images/';
+                $fichier = basename($_FILES['image']['name']);
+                $taille_maxi = 2000000;
+                $taille = filesize($_FILES['image']['tmp_name']);
+                $extensions = ['.png', '.gif', '.jpg', '.jpeg'];
+                $extension = strrchr($_FILES['image']['name'], '.');
+
+                // vérifier si une valeur existe dans un tableau in_array(ce que tu cherches, le tableau)
+                if(!in_array($extension,$extensions))
+                {
+                    $err=7;
+                }
+
+                // vérifier le poids de mon image
+                if($taille > $taille_maxi)
+                {
+                    $err=8;
+                }
+
+                // vérifier si erreur
+                if($err==0)
+                {
+                    // protection du nom du fichier 
+                    //On formate le nom du fichier, strtr remplace tous les KK spéciaux en normaux suivant notre liste
+                    $fichier = strtr($fichier,
+                    'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ','AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy');
+                    $fichier = preg_replace('/([^.a-z0-9]+)/i', '-', $fichier); // preg_replace remplace tout ce qui n'est pas KK normal en tiret
+
+                    // pour éviter le conflit
+
+                    // $fichier = monimage.jpg
+                    // rand() => 1561561561
+                    // $fichierCplt = 1561561561monimage.jpg
+                    $fichierCplt = rand().$fichier;
+                                                                        // ../images/1561561561monimage.jpg
+                    if(move_uploaded_file($_FILES['image']['tmp_name'], $dossier.$fichierCplt))
+                    {
+                        // insertion dans la base de données
+                          // pas d'erreur avec l'image
+                        // aller chercher la base de données (attention elle est à l'extérieur)
+                        require "../connexion.php";
+                        // insérer dans la base de données avec PDO et SQL
+                        $insert = $bdd->prepare("INSERT INTO etablissements(nom,introduction,description,image,categorie) VALUES(:nom,:intro,:descri,:img,:cat)");
+                        $insert->execute([
+                            ":nom" => $nom,
+                            ":intro" => $introduction,
+                            ":descri" => $description,
+                            ":img" => $fichierCplt,
+                            ":cat" => $categorie
+                        ]);
+                        $insert->closeCursor();
+                        // rediriger vers le tableau des écoles avec un signalement que c'est ajouté
+                        header("LOCATION:schools.php?insert=success");
+                    }else{
+                        header("LOCATION:addSchools.php?error=7");
+                    }
+
+                }else{
+                    header("LOCATION:addSchools.php?error=".$err);
+                }
 
 
-    //     // tester s'il y a eu une erreur
-    //     if($err == 0)
-    //     {
-    //         // pas d'erreur
-    //         // insertion dans la base de données
-    //         // aller chercher la base de données (attention elle est à l'extérieur)
-    //         require "../connexion.php";
-    //         // insérer dans la base de données avec PDO et SQL
-    //         $insert = $bdd->prepare("INSERT INTO etablissements(nom,introduction,description,image,categorie) VALUES(:nom,:intro,:descri,:img,:cat)");
-    //         $insert->execute([
-    //             ":nom" => $nom,
-    //             ":intro" => $introduction,
-    //             ":descri" => $description,
-    //             ":img" => $image,
-    //             ":cat" => $categorie
-    //         ]);
-    //         $insert->closeCursor();
-
-    //         // rediriger vers le tableau des écoles avec un signalement que c'est ajouté
-    //         header("LOCATION:schools.php?insert=success");
-    //     }else{
-    //         // il y a eu au moins une erreur
-    //         // rediriger vers le formulaire avec le code erreur généré
-    //         header("LOCATION:addSchools.php?error=".$err);
-    //     }
 
 
-    // }else{
-    //     header("LOCATION:addSchools.php");
-    // }
+            }else{
+                header("LOCATION:addSchools.php?error=5");
+            }
+
+
+
+          
+        }else{
+            // il y a eu au moins une erreur
+            // rediriger vers le formulaire avec le code erreur généré
+            header("LOCATION:addSchools.php?error=".$err);
+        }
+
+
+    }else{
+        header("LOCATION:addSchools.php");
+    }
 
 
 
