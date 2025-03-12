@@ -3,8 +3,46 @@
     if(!$_SESSION['login'])
     {
         header("LOCATION:index.php");
+        exit();
     }
     require "../connexion.php";
+
+    if(isset($_GET['delete']))
+    {
+        // vérifier si delete est numérique
+        $idDel = htmlspecialchars($_GET['delete']);
+        if(!is_numeric($idDel))
+        {
+            header("LOCATION:schools.php");
+            exit();
+        }
+
+        
+        // vérifier si delete existe dans la bdd
+        $school = $bdd->prepare("SELECT * FROM etablissements WHERE id=?");
+        $school->execute([$idDel]);
+        $donSchool = $school->fetch();
+        $school->closeCursor();
+        if(!$donSchool)
+        {
+            header("LOCATION:schools.php");
+            exit();
+        } 
+
+        // supprimer le fichier
+        unlink("../images/".$donSchool['image']);
+
+        // supprimer la donnée dans la bdd
+        $delete = $bdd->prepare("DELETE FROM etablissements WHERE id=?");
+        $delete->execute([$idDel]);
+        $delete->closeCursor();
+
+        // prévenir l'utilisateur
+        header("LOCATION:schools.php?successdel=".$idDel);
+        exit();
+    }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +73,10 @@
         {
             echo "<div class='alert alert-warning my-3'>Vous avez bien modifié l'id numéro ".$_GET['update']."</div>";
         }
+        if(isset($_GET['successdel']))
+        {
+            echo "<div class='alert alert-danger my-3'>Vous avez bien supprimé l'id numéro ".$_GET['successdel']."</div>";
+        }
     ?>
     <table class="table table-striped">
         <thead>
@@ -56,7 +98,7 @@
                         echo "<td>".$don['cnom']."</td>";
                         echo "<td>";
                             echo "<a href='updateSchools.php?id=".$don['eid']."' class='btn btn-warning mx-1'>Modifier</a>";
-                            echo "<a href='#' class='btn btn-danger mx-1'>Supprimer</a>";
+                            echo "<a href='schools.php?delete=".$don['eid']."' class='btn btn-danger mx-1'>Supprimer</a>";
                         echo "</td>";
                     echo "</tr>";
                 }

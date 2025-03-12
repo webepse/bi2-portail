@@ -56,7 +56,7 @@
             // traitement de l'image 
             if(isset($_FILES['image']))
             {
-                if($_FILES['images']['error'] != 0)
+                if($_FILES['image']['error'] != 0)
                 {
                     header("LOCATION:addSchools.php?error=6");
                     exit();

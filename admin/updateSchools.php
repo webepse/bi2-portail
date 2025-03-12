@@ -10,8 +10,14 @@
     if(isset($_GET['id']))
     {
         $id = htmlspecialchars($_GET['id']);
+        if(!is_numeric($id))
+        {
+            header("LOCATION:schools.php");
+            exit();
+        }
     }else{
         header("LOCATION:schools.php");
+        exit();
     }
 
     require "../connexion.php";
@@ -23,6 +29,7 @@
     if(!$donSchool)
     {
         header("LOCATION:schools.php");
+        exit();
     }
 ?>
 
@@ -42,7 +49,7 @@
   <div class="container">
     <h1>Modifier un établissement</h1>
     <a href="schools.php" class="btn btn-secondary">Retour</a>
-    <form action="treatmentUpdateSchool.php?id=<?= $id ?>" method="POST">
+    <form action="treatmentUpdateSchool.php?id=<?= $id ?>" method="POST" enctype="multipart/form-data">
         <div class="form-group my-3">
             <label for="nom">Nom: </label>
             <input type="text" id="nom" name="nom" class="form-control" value="<?= $donSchool['nom'] ?>">
@@ -74,8 +81,11 @@
             <textarea name="description" id="description" class="form-control"><?= $donSchool['description'] ?></textarea>
         </div>
         <div class="form-group my-3">
+            <div class="col-4">
+                <img src="../images/<?= $donSchool['image'] ?>" alt="image de <?= $donSchool['nom'] ?>" class="img-fluid">
+            </div>
             <label for="image">Image: </label>
-            <input type="text" name="image" id="image" class="form-control" value="<?= $donSchool['image'] ?>">
+            <input type="file" name="image" id="image" class="form-control" value="">
         </div>
         <div class="form-group my-3">
             <input type="submit" value="Modifier" class="btn btn-warning">
