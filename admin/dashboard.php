@@ -1,14 +1,16 @@
 <?php
     session_start();
-    if(!$_SESSION['login'])
+    if(!isset($_SESSION['login']))
     {
         header("LOCATION:index.php");
+        exit();
     }
 
     if(isset($_GET['deco']))
     {
       session_destroy();
       header("LOCATION:index.php");
+      exit();
     }
 ?>
 <!DOCTYPE html>

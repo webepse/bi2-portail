@@ -1,8 +1,9 @@
 <?php
     session_start();
-    if(!$_SESSION['login'])
+    if(!isset($_SESSION['login']))
     {
         header("LOCATION:index.php");
+        exit();
     }
     require "../connexion.php";
 ?>

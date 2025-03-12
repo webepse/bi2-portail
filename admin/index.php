@@ -34,6 +34,7 @@
                     // création des sessions
                     $_SESSION['login'] = $don['login'];
                     header("LOCATION:dashboard.php");
+                    exit(); // pour dire au programme d'arrêter (opti)
                 }else{
                     $error = "Votre login ou votre mot de passe ne correspond pas!";
                 }

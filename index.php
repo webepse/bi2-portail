@@ -22,7 +22,7 @@
         </div>
         <div class="container-grid">
             <?php
-                $req = $bdd->query("SELECT * FROM etablissements");
+                $req = $bdd->query("SELECT * FROM etablissements ORDER BY id DESC LIMIT 0,6");
                 while($don = $req->fetch())
                 {
                     echo '<div class="card">';

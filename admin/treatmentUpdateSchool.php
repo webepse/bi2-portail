@@ -4,6 +4,7 @@
     if(!isset($_SESSION['login']))
     {
         header("LOCATION:index.php");
+        exit();
     }
 
        // gestion de la dépendance du GET id

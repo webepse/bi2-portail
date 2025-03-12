@@ -4,6 +4,7 @@
     if(!isset($_SESSION['login']))
     {
         header("LOCATION:index.php");
+        exit();
     }
     
     //vérifier si mon formulaire à été envoyé oui ou non?
@@ -58,13 +59,18 @@
                 if($_FILES['images']['error'] != 0)
                 {
                     header("LOCATION:addSchools.php?error=6");
+                    exit();
                 }
 
+                // gestion de l'image
                 $dossier = '../images/';
+                // fichier.jpg
+                // basename(fichier.jpg) = fichier
                 $fichier = basename($_FILES['image']['name']);
                 $taille_maxi = 2000000;
                 $taille = filesize($_FILES['image']['tmp_name']);
                 $extensions = ['.png', '.gif', '.jpg', '.jpeg'];
+                // .jpg
                 $extension = strrchr($_FILES['image']['name'], '.');
 
                 // vérifier si une valeur existe dans un tableau in_array(ce que tu cherches, le tableau)
@@ -83,9 +89,14 @@
                 if($err==0)
                 {
                     // protection du nom du fichier 
+                    // sur linux je ne peux avoir un fichier qui possède des kk spéciaux
                     //On formate le nom du fichier, strtr remplace tous les KK spéciaux en normaux suivant notre liste
+                    // spéciaux(.jpg)
+                    // speciaux(.jpg)
                     $fichier = strtr($fichier,
                     'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ','AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy');
+                    // speci aux(.jpg)
+                    // speci-aux(.jpg)
                     $fichier = preg_replace('/([^.a-z0-9]+)/i', '-', $fichier); // preg_replace remplace tout ce qui n'est pas KK normal en tiret
 
                     // pour éviter le conflit
@@ -113,12 +124,15 @@
                         $insert->closeCursor();
                         // rediriger vers le tableau des écoles avec un signalement que c'est ajouté
                         header("LOCATION:schools.php?insert=success");
+                        exit();
                     }else{
-                        header("LOCATION:addSchools.php?error=7");
+                        header("LOCATION:addSchools.php?error=8");
+                        exit();
                     }
 
                 }else{
                     header("LOCATION:addSchools.php?error=".$err);
+                    exit();
                 }
 
 
@@ -126,6 +140,7 @@
 
             }else{
                 header("LOCATION:addSchools.php?error=5");
+                exit();
             }
 
 
@@ -135,11 +150,13 @@
             // il y a eu au moins une erreur
             // rediriger vers le formulaire avec le code erreur généré
             header("LOCATION:addSchools.php?error=".$err);
+            exit();
         }
 
 
     }else{
         header("LOCATION:addSchools.php");
+        exit();
     }
 
 
