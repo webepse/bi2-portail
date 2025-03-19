@@ -31,6 +31,43 @@
         header("LOCATION:schools.php");
         exit();
     }
+
+if(isset($_GET['delete']))
+{
+    // vérifier si delete est numérique
+    $idDel = htmlspecialchars($_GET['delete']);
+    if(!is_numeric($idDel))
+    {
+        header("LOCATION:updateSchools.php?id=".$id);
+        exit();
+    }
+
+
+    // vérifier si delete existe dans la bdd
+    $image = $bdd->prepare("SELECT * FROM images WHERE id=?");
+    $image->execute([$idDel]);
+    $donImg = $image->fetch();
+    $image->closeCursor();
+    if(!$donImg)
+    {
+        header("LOCATION:updateSchools.php?id=".$id);
+        exit();
+    }
+
+    // supprimer le fichier
+    unlink("../images/".$donImg['fichier']);
+
+    // supprimer la donnée dans la bdd
+    $delete = $bdd->prepare("DELETE FROM images WHERE id=?");
+    $delete->execute([$idDel]);
+    $delete->closeCursor();
+
+    // prévenir l'utilisateur
+    header("LOCATION:updateSchools.php?id=".$id."&successdel=".$idDel);
+    exit();
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -47,50 +84,95 @@
         include("partials/header.php");
     ?>
   <div class="container">
-    <h1>Modifier un établissement</h1>
-    <a href="schools.php" class="btn btn-secondary">Retour</a>
-    <form action="treatmentUpdateSchool.php?id=<?= $id ?>" method="POST" enctype="multipart/form-data">
-        <div class="form-group my-3">
-            <label for="nom">Nom: </label>
-            <input type="text" id="nom" name="nom" class="form-control" value="<?= $donSchool['nom'] ?>">
-        </div>
-        <div class="form-group my-3">
-            <label for="categorie">Categorie: </label>
-            <select name="categorie" id="categorie" class="form-control">
-                <?php
-                    $req = $bdd->query("SELECT * FROM categories");
-                    while($don = $req->fetch())
-                    {
-                        if($donSchool['categorie']==$don['id'])
-                        {
-                            echo "<option value='".$don['id']."' selected>".$don['nom']."</option>";
-                        }else{
-                            echo "<option value='".$don['id']."'>".$don['nom']."</option>";
-                        }
-                    }
-                    $req->closeCursor();
-                ?>
-            </select>
-        </div>
-        <div class="form-group my-3">
-            <label for="intro">Introduction: </label>
-            <textarea name="introduction" id="intro" class="form-control"><?= $donSchool['introduction'] ?></textarea>
-        </div>
-        <div class="form-group my-3">
-            <label for="description">Description: </label>
-            <textarea name="description" id="description" class="form-control"><?= $donSchool['description'] ?></textarea>
-        </div>
-        <div class="form-group my-3">
-            <div class="col-4">
-                <img src="../images/<?= $donSchool['image'] ?>" alt="image de <?= $donSchool['nom'] ?>" class="img-fluid">
-            </div>
-            <label for="image">Image: </label>
-            <input type="file" name="image" id="image" class="form-control" value="">
-        </div>
-        <div class="form-group my-3">
-            <input type="submit" value="Modifier" class="btn btn-warning">
-        </div>
-    </form>
+      <div class="row">
+          <div class="col-md-6">
+              <h1>Modifier un établissement</h1>
+              <a href="schools.php" class="btn btn-secondary">Retour</a>
+              <form action="treatmentUpdateSchool.php?id=<?= $id ?>" method="POST" enctype="multipart/form-data">
+                  <div class="form-group my-3">
+                      <label for="nom">Nom: </label>
+                      <input type="text" id="nom" name="nom" class="form-control" value="<?= $donSchool['nom'] ?>">
+                  </div>
+                  <div class="form-group my-3">
+                      <label for="categorie">Categorie: </label>
+                      <select name="categorie" id="categorie" class="form-control">
+                          <?php
+                          $req = $bdd->query("SELECT * FROM categories");
+                          while($don = $req->fetch())
+                          {
+                              if($donSchool['categorie']==$don['id'])
+                              {
+                                  echo "<option value='".$don['id']."' selected>".$don['nom']."</option>";
+                              }else{
+                                  echo "<option value='".$don['id']."'>".$don['nom']."</option>";
+                              }
+                          }
+                          $req->closeCursor();
+                          ?>
+                      </select>
+                  </div>
+                  <div class="form-group my-3">
+                      <label for="intro">Introduction: </label>
+                      <textarea name="introduction" id="intro" class="form-control"><?= $donSchool['introduction'] ?></textarea>
+                  </div>
+                  <div class="form-group my-3">
+                      <label for="description">Description: </label>
+                      <textarea name="description" id="description" class="form-control"><?= $donSchool['description'] ?></textarea>
+                  </div>
+                  <div class="form-group my-3">
+                      <div class="col-4">
+                          <img src="../images/<?= $donSchool['image'] ?>" alt="image de <?= $donSchool['nom'] ?>" class="img-fluid">
+                      </div>
+                      <label for="image">Image: </label>
+                      <input type="file" name="image" id="image" class="form-control" value="">
+                  </div>
+                  <div class="form-group my-3">
+                      <input type="submit" value="Modifier" class="btn btn-warning">
+                  </div>
+              </form>
+          </div>
+          <div class="col-md-6">
+              <h2>Galerie Image</h2>
+              <a href="addImg.php?id=<?= $id ?>" class="btn btn-primary">Ajouter</a>
+              <?php
+                if(isset($_GET['insert']))
+                {
+                    echo "<div class='alert alert-success my-3'>Vous avez bien ajouté une image</div>";
+                }
+                if(isset($_GET['successdel']))
+                {
+                    echo "<div class='alert alert-danger my-3'>Vous avez bien suppprimé l'image n°".$_GET['successdel']."</div>";
+                }
+              ?>
+              <table class="table table-striped">
+                  <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Image</th>
+                      <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+                  $schools = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+                  $schools->execute([$id]);
+                  while($don = $schools->fetch())
+                  {
+                      echo "<tr>";
+                      echo "<td>".$don['id']."</td>";
+                      echo "<td><img src='../images/".$don['fichier']."' alt='image de' class='img-fluid col-6'></td>";
+                      echo "<td>";
+                      echo "<a href='updateSchools.php?id=".$id."&delete=".$don['id']."' class='btn btn-danger mx-1'>Supprimer</a>";
+                      echo "</td>";
+                      echo "</tr>";
+                  }
+                  $schools->closeCursor();
+                  ?>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+
   </div>
 </body>
 </html>

@@ -32,6 +32,20 @@
         // supprimer le fichier
         unlink("../images/".$donSchool['image']);
 
+        // supprimer les éventuelles images (fichier) de la galerie
+        $gal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+        $gal->execute([$idDel]);
+        while($donGal = $gal->fetch())
+        {
+            unlink("../images/".$donGal['fichier']);
+        }
+        $gal->closeCursor();
+
+        // supprimer les éventuelles images (la donnée) de la galerie
+        $delGal = $bdd->prepare("DELETE FROM images WHERE id_etablissement=?");
+        $delGal->execute([$idDel]);
+        $delGal->closeCursor();
+
         // supprimer la donnée dans la bdd
         $delete = $bdd->prepare("DELETE FROM etablissements WHERE id=?");
         $delete->execute([$idDel]);

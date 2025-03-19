@@ -31,15 +31,28 @@ if(isset($_GET['delete']))
 
     // supprimer en cascade les éléments lié à la catégorie à supprimer
     // aller chercher tous les établissements qui ont l'id ex 7
+    // ne pas oublier les images de la gallerie associée
     $schools = $bdd->prepare("SELECT * FROM etablissements WHERE categorie=?");
     $schools->execute([$idDel]);
     while($donSchools = $schools->fetch())
     {
         // supprimer l'image
         unlink("../images/".$donSchools['image']);
+        // supprimer les éventuelles images (fichier) de la galerie
+        $gal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
+        $gal->execute([$donSchools['id']]);
+        while($donGal = $gal->fetch())
+        {
+            unlink("../images/".$donGal['fichier']);
+        }
+        $gal->closeCursor();
+
+        // supprimer les éventuelles images (la donnée) de la galerie
+        $delGal = $bdd->prepare("DELETE FROM images WHERE id_etablissement=?");
+        $delGal->execute([$idDel]);
+        $delGal->closeCursor();
     }
     $schools->closeCursor();
-
 
     // supprimer tous les établissements qui ont l'id ex 7
     $deleteSchools = $bdd->prepare("DELETE FROM etablissements WHERE categorie=?");
