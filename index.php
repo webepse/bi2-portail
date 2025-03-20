@@ -59,7 +59,17 @@
             </div>
         </div>
         <div class="droite">
-            <div id="formulaire">
+            <form method="POST" action="traitement.php" id="formulaire">
+                <?php
+                    if(isset($_GET['error']))
+                    {
+                        echo "<div class='error'>Une erreur est survenue (code: ".$_GET['error'].")</div>";
+                    }
+                    if(isset($_GET['contact']))
+                    {
+                        echo "<div class='success'>Merci de votre message, nous vous répondons dés que possible</div>";
+                    }
+                ?>
                 <div class="name">
                     <div class="form-group">
                         <label for="last">Last Name</label>
@@ -81,7 +91,7 @@
                 <div class="submit">
                     <input type="submit" value="Envoyer">
                 </div>
-            </div>
+            </form>
 
         </div>
     </div>
@@ -92,3 +102,4 @@
     <script src="assets/script.js"></script>
 </body>
 </html>
+
