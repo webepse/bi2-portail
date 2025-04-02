@@ -139,6 +139,7 @@
                  {
                     // supprimer l'ancienne image du dossier /images/
                     unlink("../images/".$donSchool['image']);
+                    unlink("../images/mini_".$donSchool['image']);
 
                      // update dans la base de données avec PDO et SQL
                      $update = $bdd->prepare("UPDATE etablissements SET nom=:nom, introduction=:intro, description=:descri, image=:img, categorie=:cat WHERE id=:myid");
@@ -151,8 +152,14 @@
                         ":myid" => $id
                     ]);
                     $update->closeCursor();
-                    header("LOCATION:schools.php?update=".$id);
-                    exit();
+                     if($extension == ".jpg" || $extension == ".jpeg")
+                     {
+                         header("LOCATION:redim.php?update=".$id."&image=".$fichierCplt);
+                         exit();
+                     }else {
+                         header("LOCATION:redimpng.php?update=" . $id . "&image=" . $fichierCplt);
+                         exit();
+                     }
                  }else{
                      header("LOCATION:updateSchools.php?id=".$id."&error=8");
                      exit();

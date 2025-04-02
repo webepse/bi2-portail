@@ -31,6 +31,7 @@
 
         if($err == 0){
             require "connexion.php";
+            /** @var PDO $bdd */
             $insert = $bdd->prepare("INSERT INTO contact(firstname,lastname,email,message,date) VALUES(:firstname, :lastname, :email, :message, NOW())");
             $insert->execute([
                 ":firstname" => $firstname,

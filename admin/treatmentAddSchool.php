@@ -69,7 +69,7 @@
                 $fichier = basename($_FILES['image']['name']);
                 $taille_maxi = 2000000;
                 $taille = filesize($_FILES['image']['tmp_name']);
-                $extensions = ['.png', '.gif', '.jpg', '.jpeg'];
+                $extensions = ['.png', '.jpg', '.jpeg'];
                 // .jpg
                 $extension = strrchr($_FILES['image']['name'], '.');
 
@@ -113,6 +113,7 @@
                         // aller chercher la base de données (attention elle est à l'extérieur)
                         require "../connexion.php";
                         // insérer dans la base de données avec PDO et SQL
+                        /** @var PDO $bdd */
                         $insert = $bdd->prepare("INSERT INTO etablissements(nom,introduction,description,image,categorie) VALUES(:nom,:intro,:descri,:img,:cat)");
                         $insert->execute([
                             ":nom" => $nom,
@@ -123,8 +124,14 @@
                         ]);
                         $insert->closeCursor();
                         // rediriger vers le tableau des écoles avec un signalement que c'est ajouté
-                        header("LOCATION:schools.php?insert=success");
-                        exit();
+                        if($extension == ".jpg" || $extension == ".jpeg")
+                        {
+                            header("LOCATION:redim.php?image=".$fichierCplt);
+                            exit();
+                        }else{
+                            header("LOCATION:redimpng.php?image=".$fichierCplt);
+                            exit();
+                        }
                     }else{
                         header("LOCATION:addSchools.php?error=8");
                         exit();

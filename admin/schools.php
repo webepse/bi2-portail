@@ -31,6 +31,7 @@
 
         // supprimer le fichier
         unlink("../images/".$donSchool['image']);
+        unlink("../images/mini_".$donSchool['image']);
 
         // supprimer les éventuelles images (fichier) de la galerie
         $gal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");

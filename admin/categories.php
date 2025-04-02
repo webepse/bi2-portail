@@ -38,6 +38,7 @@ if(isset($_GET['delete']))
     {
         // supprimer l'image
         unlink("../images/".$donSchools['image']);
+        unlink("../images/mini_".$donSchools['image']);
         // supprimer les éventuelles images (fichier) de la galerie
         $gal = $bdd->prepare("SELECT * FROM images WHERE id_etablissement=?");
         $gal->execute([$donSchools['id']]);
