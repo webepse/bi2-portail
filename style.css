@@ -204,6 +204,10 @@ header a{
     background-color: red;
 }
 
+#more{
+    margin: 30px auto;
+}
+
 /********************************************************/
 /************************* Contact ***************/
 
@@ -409,6 +413,26 @@ footer{
     height: 100%;
     object-fit: cover;
   }
+
+/*********** Schools Page **************/
+
+.category-header{
+    width: 90%;
+    margin: 0 auto;
+}
+
+.container-flex{
+    display: flex;
+    width: fit-content;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+#schools h1{
+    margin-top: 120px;
+}
+
+
 
 @media all and (max-width: 1080px)
 {

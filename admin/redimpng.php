@@ -9,8 +9,6 @@ if(!isset($_SESSION['login']))
 $source = imagecreatefrompng("../images/".$_GET['image']); // La photo est la source
 
 
-
-
 // getimagesize retourne un array contenant la largeur [0] et la hauteur [1]
 
 $TailleImageChoisie = getimagesize("../images/".$_GET['image']);
@@ -18,7 +16,6 @@ $TailleImageChoisie = getimagesize("../images/".$_GET['image']);
 // je définis la largeur de mon image.
 $NouvelleLargeur = 300;
 
- 
 
 //  je calcule le pourcentage de réduction qui correspond au quotient de l'ancienne largeur par la nouvelle.
 
@@ -57,7 +54,5 @@ if(isset($_GET['update']))
 }else{
     header("LOCATION:schools.php?insert=success");
 }
-
-
 
 ?>

@@ -27,7 +27,7 @@
                 {
                     echo '<div class="card">';
                         echo '<div class="image">';
-                            echo '<img src="images/'.$don['image'].'" alt="image de '.$don['nom'].'">';
+                            echo '<img src="images/mini_'.$don['image'].'" alt="image de '.$don['nom'].'">';
                         echo '</div>';
                         echo '<div class="texte">';
                             echo '<h2>'.$don['nom'].'</h2>';
@@ -39,7 +39,8 @@
                 }
                 $req->closeCursor();
             ?>         
-        </div>     
+        </div>
+        <a href="schools.php" class="btn" id="more">En voir plus</a>
     </div>
     <div class="slide" id="contact">
         <div class="gauche">
