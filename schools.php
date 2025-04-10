@@ -129,11 +129,12 @@ if(isset($_GET['page']))
                     echo '</div>';
                     echo '</div>';
                 }
+                $schools->closeCursor();
             }else{
                 echo "<div>Il n'y a pas d'établissement lié à cette catégorie</div>";
             }
 
-            $schools->closeCursor();
+
             ?>
         </div>
         <div class="container-pagination">
