@@ -24,7 +24,6 @@ if(isset($_GET['category']))
             }
             $verif->closeCursor();
 
-
             $req = $bdd->prepare("SELECT * FROM etablissements WHERE categorie =?");
             $req->execute([$category]);
             // permet de compter le nombre de réponse
@@ -35,20 +34,41 @@ if(isset($_GET['category']))
             exit();
         }
     }else{
-        $req = $bdd->query("SELECT * FROM etablissements ORDER BY id DESC");
+        header("LOCATION:404.php");
+        exit();
     }
 
 }else{
-    $req = $bdd->query("SELECT * FROM etablissements ORDER BY id DESC");
+    $req = $bdd->query("SELECT * FROM etablissements");
     $count = $req->rowCount();
 }
-
-
-
-
-
+$req->closeCursor();
+$limit = 3;
+$nbpage = ceil($count/$limit);
+// j'ai besoin d'un GET page pour faire fonctionner ma pagination
+if(isset($_GET['page']))
+{
+    // protèger la donnée
+    $pg = htmlspecialchars($_GET['page']);
+    // vérifier si page est numérique
+    if(is_numeric($pg))
+    {
+        // vérifier si la demande de la page courante est supérieur à la limite de page
+        if($pg > $nbpage)
+        {
+            $pg = $nbpage;
+        }elseif ($pg <= 0)
+        {
+            $pg = 1;
+        }
+    }else{
+        header("LOCATION:404.php");
+        exit();
+    }
+}else{
+    $pg=1;
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -75,10 +95,27 @@ if(isset($_GET['category']))
             ?>
         </div>
 
+            <?php
+
+            ?>
+
         <div class="container-grid">
             <?php
             if($count > 0){
-                while($don = $req->fetch())
+                $offset = ($pg-1)*$limit;
+                // choix d'une catégorie ou non?
+                // ce test sur la présence de $category qu'on crée au dessus suivant le choix de l'utilisateur
+                if(isset($category))
+                {
+                    $schools = $bdd->prepare("SELECT * FROM etablissements WHERE categorie = :category LIMIT :offset,:limit");
+                    $schools->bindParam(":category",$category, PDO::PARAM_INT);
+                }else{
+                    $schools = $bdd->prepare("SELECT * FROM etablissements LIMIT :offset,:limit");
+                }
+                $schools->bindParam(":offset",$offset, PDO::PARAM_INT);
+                $schools->bindParam(":limit",$limit, PDO::PARAM_INT);
+                $schools->execute();
+                while($don = $schools->fetch())
                 {
                     echo '<div class="card">';
                     echo '<div class="image">';
@@ -96,12 +133,40 @@ if(isset($_GET['category']))
                 echo "<div>Il n'y a pas d'établissement lié à cette catégorie</div>";
             }
 
-            $req->closeCursor();
+            $schools->closeCursor();
+            ?>
+        </div>
+        <div class="container-pagination">
+            <?php
+                if($count > 0)
+                {
+                    echo "<div id='pagination'>";
+                    if($pg>1)
+                    {
+                        if(isset($category))
+                        {
+                            echo "<a href='schools.php?category=".$category."&page=".($pg-1)."' class='cursor'> < </a>";
+                        }else{
+                            echo "<a href='schools.php?page=".($pg-1)."' class='cursor'> < </a>";
+                        }
+                    }
+                    echo "<div class='current-page'>".$pg."</div>";
+                    // $pg = 4 et $nbpage = 4 => X
+                    // $pg = 2 et $nbapage = 4 => V
+                    if($pg!=$nbpage)
+                    {
+                        if(isset($category))
+                        {
+                            echo "<a href='schools.php?category=".$category."&page=".($pg+1)."' class='cursor'> > </a>";
+                        }else{
+                            echo "<a href='schools.php?page=".($pg+1)."' class='cursor'> > </a>";
+                        }
+                    }
+                    echo "</div>";
+                }
             ?>
         </div>
     </div>
-
-
 </div>
 <?php
 include("partials/footer.php");

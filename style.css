@@ -432,6 +432,32 @@ footer{
     margin-top: 120px;
 }
 
+.container-pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5vh;
+}
+
+#pagination{
+    display: flex;
+}
+
+.cursor{
+    flex: 1;
+    display: block;
+    padding: 10px;
+    background-color: #7C18B0;
+    color: gold;
+    text-decoration: none;
+}
+
+.current-page{
+    flex: 1;
+    padding: 10px;
+    outline: solid 1px #7C18B0;
+}
+
 
 
 @media all and (max-width: 1080px)
